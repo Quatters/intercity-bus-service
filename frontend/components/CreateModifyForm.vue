@@ -26,8 +26,15 @@
             v-model="data[inp.id]"
           >
           </b-form-select>
-        </b-col>
-      </b-row>
+        <b-form-timepicker
+          v-else-if="inp.type === 'time'"
+          reset-button
+          label-reset-button="Очистить"
+          label-close-button="Закрыть"
+          locale="ru"
+          v-model="data[inp.key]"
+          placeholder="--:--"
+        ></b-form-timepicker>
     </div>
     <div class="mt-4">
       <b-button
