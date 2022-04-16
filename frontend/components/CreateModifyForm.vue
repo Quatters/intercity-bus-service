@@ -73,6 +73,9 @@ export default {
   },
   computed: {
     allRequiredInputsAreFilled() {
+      if (!this.data || Object.keys(this.data).length === 0) {
+        return false;
+      }
       for (const [key, value] of Object.entries(this.data)) {
         const inp = this.form.inputs.find(
           (inp) => inp.key === key || inp.id === key
