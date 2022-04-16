@@ -1,8 +1,8 @@
 <template>
   <generic-admin-page
     :fields="fields"
-    :inputScheme="requestScheme"
-    :requestScheme="requestScheme"
+    :inputScheme="scheme"
+    :requestScheme="scheme"
     endpoint="/api/admin/routes"
   />
 </template>
@@ -13,7 +13,7 @@ export default {
   components: { GenericAdminPage },
   data() {
     return {
-      requestScheme: ['route_number', 'from', 'to', 'distance_km'],
+      scheme: ['route_number', 'from', 'to', 'distance_km'],
       fields: [
         {
           key: 'route_number',
