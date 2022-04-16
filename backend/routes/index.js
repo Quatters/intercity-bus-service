@@ -2,6 +2,7 @@ import cities from './admin/cities.js';
 import routes from './admin/routes.js';
 import busModels from './admin/bus-models.js';
 import buses from './admin/buses.js';
+import schedule from './admin/schedule.js';
 
 export default [
   {
@@ -19,5 +20,9 @@ export default [
   {
     url: 'admin/buses',
     router: buses,
+  },
+  {
+    url: 'admin/schedule',
+    router: schedule,
   },
 ];
