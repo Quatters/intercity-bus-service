@@ -5,6 +5,7 @@ let connection = await createConnection({
   user: 'root',
   password: '',
   database: 'intercity_bus_service',
+  // dateStrings: true,
 });
 
 async function select(tables, columns = '*', order = null) {
@@ -100,6 +101,7 @@ async function update(table, oldData, newData) {
   });
   sql = sql.slice(0, -4);
 
+  console.log(sql);
   await connection.query(sql);
 
   return newData;
