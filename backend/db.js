@@ -79,7 +79,9 @@ async function update(table, oldData, newData) {
 
   let sql = `UPDATE ${table} SET`;
   Object.entries(newData).forEach(([key, value]) => {
-    if (typeof value === 'number') {
+    if (!value) {
+      sql = `${sql} \`${key}\`=NULL,`;
+    } else if (value == null || typeof value === 'number') {
       sql = `${sql} \`${key}\`=${value},`;
     } else {
       sql = `${sql} \`${key}\`='${value}',`;
@@ -88,10 +90,12 @@ async function update(table, oldData, newData) {
   sql = sql.slice(0, -1) + ' WHERE';
 
   Object.entries(oldData).forEach(([key, value]) => {
-    if (typeof value === 'number') {
-      sql = `${sql} \`${key}\`=${value} AND`;
-    } else {
-      sql = `${sql} \`${key}\`='${value}' AND`;
+    if (value != null) {
+      if (typeof value === 'number') {
+        sql = `${sql} \`${key}\`=${value} AND`;
+      } else {
+        sql = `${sql} \`${key}\`='${value}' AND`;
+      }
     }
   });
   sql = sql.slice(0, -4);

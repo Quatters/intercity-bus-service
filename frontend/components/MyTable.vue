@@ -4,6 +4,7 @@
     :items="items"
     :fields="fields ? fields : undefined"
     small
+    show-empty
     head-variant="light"
     sticky-header="100%"
     selectable
