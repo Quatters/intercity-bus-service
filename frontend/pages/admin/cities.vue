@@ -1,8 +1,8 @@
 <template>
   <generic-admin-page
     :fields="fields"
-    :requestScheme="requestScheme"
-    :inputScheme="inputScheme"
+    :requestScheme="scheme"
+    :inputScheme="scheme"
     endpoint="/api/admin/cities"
   />
 </template>
@@ -21,8 +21,7 @@ export default {
           type: 'text',
         },
       ],
-      requestScheme: ['city'],
-      inputScheme: ['city', 'city_id'],
+      scheme: ['city'],
     };
   },
 };
