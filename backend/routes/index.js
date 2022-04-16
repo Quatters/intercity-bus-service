@@ -1,5 +1,6 @@
 import cities from './admin/cities.js';
 import routes from './admin/routes.js';
+import busModels from './admin/bus-models.js';
 
 export default [
   {
@@ -9,5 +10,9 @@ export default [
   {
     url: 'admin/routes',
     router: routes,
+  },
+  {
+    url: 'admin/bus-models',
+    router: busModels,
   },
 ];
