@@ -92,6 +92,11 @@ export default {
       });
       this.inputData = inputData;
     },
+    unselectRow() {
+      this.inputData = {};
+      this.$refs.table.unselect();
+      this.selectedRow = null;
+    },
     async handleCreate(data) {
       try {
         const sendData = {};
@@ -105,19 +110,9 @@ export default {
           message: `Запись успешно добавлена.`,
         };
       } catch (error) {
-        this.operationStatus.status = 'error';
-        if (error.response?.status === 400) {
-          if (error.response.data?.code === 'ER_DUP_ENTRY') {
-            this.operationStatus.message =
-              'Ошибка. Запись с указанным ключом уже существует.';
-          }
-        } else {
-          this.operationStatus.message = 'Неизвестная ошибка.';
-        }
+        this.handleError(error);
       } finally {
-        this.inputData = {};
-        this.$refs.table.unselect();
-        this.selectedRow = null;
+        this.unselectRow();
       }
     },
     async handleModify(data) {
@@ -142,19 +137,20 @@ export default {
           message: 'Запись успешно изменена.',
         };
       } catch (error) {
-        this.operationStatus.status = 'error';
-        if (error.response?.status === 400) {
-          if (error.response.data?.code === 'ER_DUP_ENTRY') {
-            this.operationStatus.message =
-              'Ошибка. Запись с указанным ключом уже существует.';
-          }
-        } else {
-          this.operationStatus.message = 'Неизвестная ошибка.';
-        }
+        this.handleError(error);
       } finally {
-        this.inputData = {};
-        this.$refs.table.unselect();
-        this.selectedRow = null;
+        this.unselectRow();
+      }
+    },
+    handleError(error) {
+      this.operationStatus.status = 'error';
+      if (error.response?.status === 400) {
+        if (error.response.data?.code === 'ER_DUP_ENTRY') {
+          this.operationStatus.message =
+            'Ошибка. Запись с указанным ключом уже существует.';
+        }
+      } else {
+        this.operationStatus.message = 'Неизвестная ошибка.';
       }
     },
   },
