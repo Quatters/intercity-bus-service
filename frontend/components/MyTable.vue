@@ -7,6 +7,7 @@
     show-empty
     head-variant="light"
     sticky-header="100%"
+    bordered
     selectable
     ref="table"
     @row-selected="(rows) => $emit('rowSelect', rows[0])"

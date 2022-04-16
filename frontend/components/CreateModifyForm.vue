@@ -1,31 +1,34 @@
 <template>
   <b-card>
+    <template v-if="name" #header>
+      <h6 class="mb-0">{{ name }}</h6>
+    </template>
     <div v-for="(inp, index) in form.inputs" :key="index">
-      <b-row class="mb-2">
-        <b-col v-if="inp.type !== 'hidden'" cols="5">
+      <div class="mb-3">
+        <div v-if="inp.type !== 'hidden'" class="mb-1">
           {{ inp.label }}
           <span v-if="!inp.optional" class="text-danger">*</span>
-        </b-col>
+        </div>
 
-        <b-col>
-          <b-form-input
-            v-if="inp.type === 'text'"
-            v-model="data[inp.key]"
-            type="text"
-          ></b-form-input>
+        <b-form-input
+          v-if="inp.type === 'text'"
+          v-model="data[inp.key]"
+          type="text"
+        ></b-form-input>
 
-          <b-form-input
-            v-else-if="inp.type === 'number'"
-            v-model="data[inp.key]"
-            type="number"
-          ></b-form-input>
+        <b-form-input
+          v-else-if="inp.type === 'number'"
+          v-model="data[inp.key]"
+          type="number"
+        ></b-form-input>
 
-          <b-form-select
-            v-else-if="inp.type === 'select'"
-            :options="inp.options"
-            v-model="data[inp.id]"
-          >
-          </b-form-select>
+        <b-form-select
+          v-else-if="inp.type === 'select'"
+          :options="[{ value: null, text: 'Не выбрано' }, ...inp.options]"
+          v-model="data[inp.id]"
+        >
+        </b-form-select>
+
         <b-form-timepicker
           v-else-if="inp.type === 'time'"
           reset-button
@@ -35,6 +38,7 @@
           v-model="data[inp.key]"
           placeholder="--:--"
         ></b-form-timepicker>
+      </div>
     </div>
     <div class="mt-4">
       <b-button
@@ -70,6 +74,11 @@ export default {
   },
   updated() {
     this.data = this.form.data;
+    this.form.inputs.forEach((inp) => {
+      if (inp.type === 'select' && !this.data[inp.id]) {
+        this.data[inp.id] = null;
+      }
+    });
   },
   methods: {
     handleCreate() {
@@ -84,14 +93,14 @@ export default {
       if (!this.data || Object.keys(this.data).length === 0) {
         return false;
       }
-      for (const [key, value] of Object.entries(this.data)) {
-        const inp = this.form.inputs.find(
-          (inp) => inp.key === key || inp.id === key
-        );
-        if (!inp || inp.optional) {
+      for (const inp of this.form.inputs) {
+        if (inp.optional || inp.type === 'hidden') {
           continue;
         }
-        if (!value) {
+        const dataByKey = this.data[inp.key];
+        const dataByID = this.data[inp.id];
+
+        if (!dataByKey && !dataByID) {
           return false;
         }
       }

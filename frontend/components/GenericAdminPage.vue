@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <b-row class="m-4">
-      <b-col cols="7" class="table-wrapper">
+      <b-col cols="8" class="table-wrapper">
         <my-table
           :items="items"
           :fields="fields"
