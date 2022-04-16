@@ -2,7 +2,7 @@
   <b-card>
     <div v-for="(inp, index) in form.inputs" :key="index">
       <b-row class="mb-2">
-        <b-col cols="5">
+        <b-col v-if="inp.type !== 'hidden'" cols="5">
           {{ inp.label }}
           <span v-if="!inp.optional" class="text-danger">*</span>
         </b-col>
