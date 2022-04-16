@@ -7,6 +7,7 @@
         <b-dropdown-item to="/admin/bus-models"
           >Модели автобусов</b-dropdown-item
         >
+        <b-dropdown-item to="/admin/buses">Автобусы</b-dropdown-item>
       </b-nav-item-dropdown>
     </b-navbar-nav>
   </b-navbar>
