@@ -4,6 +4,7 @@
     :requestScheme="scheme"
     :inputScheme="scheme"
     endpoint="/api/admin/cities"
+    tableName="Населенные пункты"
   />
 </template>
 

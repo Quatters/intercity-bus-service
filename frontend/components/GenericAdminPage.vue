@@ -15,6 +15,7 @@
           :canModify="!!selectedRow"
           @create="handleCreate"
           @modify="handleModify"
+          :name="tableName"
         />
         <small
           :class="
@@ -48,6 +49,10 @@ export default {
     endpoint: {
       type: String,
       required: true,
+    },
+    tableName: {
+      type: String,
+      default: null,
     },
   },
   data() {

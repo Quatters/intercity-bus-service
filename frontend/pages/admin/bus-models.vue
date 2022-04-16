@@ -4,6 +4,7 @@
     :inputScheme="scheme"
     :requestScheme="scheme"
     endpoint="/api/admin/bus-models"
+    tableName="Модели автобусов"
   />
 </template>
 

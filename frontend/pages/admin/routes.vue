@@ -4,6 +4,7 @@
     :inputScheme="scheme"
     :requestScheme="scheme"
     endpoint="/api/admin/routes"
+    tableName="Маршруты"
   />
 </template>
 

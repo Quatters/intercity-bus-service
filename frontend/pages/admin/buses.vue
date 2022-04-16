@@ -4,6 +4,7 @@
     :inputScheme="inputScheme"
     :requestScheme="requestScheme"
     endpoint="/api/admin/buses"
+    tableName="Автобусы"
   />
 </template>
 

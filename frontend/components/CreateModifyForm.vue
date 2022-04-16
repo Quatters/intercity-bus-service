@@ -54,6 +54,7 @@ export default {
       data: {},
     },
     canModify: Boolean,
+    name: String,
   },
   data() {
     return {
