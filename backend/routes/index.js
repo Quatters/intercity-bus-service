@@ -4,6 +4,7 @@ import busModels from './admin/bus-models.js';
 import buses from './admin/buses.js';
 import schedule from './admin/schedule.js';
 import flights from './admin/flights.js';
+import freeSeats from './root/free-seats.js';
 
 export default [
   {
@@ -29,5 +30,9 @@ export default [
   {
     url: 'admin/flights',
     router: flights,
+  },
+  {
+    url: 'free-seats',
+    router: freeSeats,
   },
 ];
