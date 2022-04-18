@@ -38,6 +38,18 @@
           v-model="data[inp.key]"
           placeholder="--:--"
         ></b-form-timepicker>
+
+        <b-form-datepicker
+          v-else-if="inp.type === 'date'"
+          reset-button
+          label-reset-button="Очистить"
+          label-close-button="Закрыть"
+          locale="ru"
+          v-model="data[inp.key]"
+          placeholder="Выберите дату..."
+          start-weekday="1"
+        >
+        </b-form-datepicker>
       </div>
     </div>
     <div class="mt-4">
