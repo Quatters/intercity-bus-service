@@ -49,7 +49,13 @@
         <b-form-select
           v-else-if="inp.type === 'select'"
           :options="[{ value: null, text: 'Не выбрано' }, ...inp.options]"
-          v-model="data[inp.id]"
+          @input="
+            (value) => {
+              data[inp.id] = value;
+              $emit('select', inp, data[inp.id]);
+            }
+          "
+          :value="data[inp.id]"
         >
         </b-form-select>
 

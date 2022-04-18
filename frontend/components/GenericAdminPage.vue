@@ -15,6 +15,7 @@
           :canModify="!!selectedRow"
           @create="handleCreate"
           @modify="handleModify"
+          @select="handleInputSelect"
           :name="tableName"
         />
         <small
@@ -69,8 +70,10 @@ export default {
   async mounted() {
     this.items = await this.$axios.$get(this.endpoint);
     this.fields.forEach(async (field) => {
-      if (field.type === 'select') {
-        const data = await this.$axios.$get(field.optionsFetchEndpoint);
+      if (field.type === 'select' && !field.optionsFetchIncludeParam) {
+        const data = await this.$axios.$get(
+          `${field.optionsFetchEndpoint}?inline=true`
+        );
         field.options = data.map((item) => {
           return {
             value: item[field.optionsScheme.value],
@@ -115,6 +118,7 @@ export default {
       } catch (error) {
         this.handleError(error);
       } finally {
+        this.resetParametrizedSelectFields();
         this.unselectRow();
       }
     },
@@ -142,6 +146,7 @@ export default {
       } catch (error) {
         this.handleError(error);
       } finally {
+        this.resetParametrizedSelectFields();
         this.unselectRow();
       }
     },
@@ -155,6 +160,36 @@ export default {
       } else {
         this.operationStatus.message = 'Неизвестная ошибка.';
       }
+    },
+    async handleInputSelect(inp, id) {
+      if (!inp || !id || inp?.optionsFetchIncludeParam) {
+        return;
+      }
+      this.fields.forEach(async (field) => {
+        if (
+          field.type === 'select' &&
+          field?.optionsFetchIncludeParam === inp?.id
+        ) {
+          this.inputData[field.id] = null;
+          const options = await this.$axios.$get(
+            `${field.optionsFetchEndpoint}/${id}`
+          );
+          field.options = options.map((item) => {
+            return {
+              value: item[field.optionsScheme.value],
+              text: item[field.optionsScheme.text],
+            };
+          });
+        }
+      });
+    },
+    resetParametrizedSelectFields() {
+      this.fields.forEach((field) => {
+        if (field?.optionsFetchIncludeParam) {
+          this.inputData[field.id] = null;
+          field.options = [];
+        }
+      });
     },
   },
 };
