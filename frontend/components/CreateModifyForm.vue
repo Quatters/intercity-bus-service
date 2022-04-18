@@ -4,8 +4,8 @@
       <h6 class="mb-0">{{ name }}</h6>
     </template>
     <div v-for="(inp, index) in form.inputs" :key="index">
-      <div class="mb-3">
-        <div v-if="inp.type !== 'hidden'" class="mb-1">
+      <div class="mb-3" v-if="inp.type !== 'hidden'">
+        <div class="mb-1">
           {{ inp.label }}
           <span v-if="!inp.optional" class="text-danger">*</span>
         </div>
