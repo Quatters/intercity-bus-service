@@ -15,7 +15,6 @@ export default {
   data() {
     return {
       scheme: ['route_number', 'departure_time', 'arrival_time'],
-      // inputScheme: [],
       fields: [
         {
           key: 'route_number',
@@ -28,19 +27,6 @@ export default {
           label: 'Номер маршрута',
         },
         {
-          key: 'departure_time',
-          type: 'time',
-          sortable: 'true',
-          label: 'Время отправления',
-        },
-        {
-          key: 'arrival_time',
-          type: 'time',
-          sortable: true,
-          label: 'Время прибытия',
-          optional: true,
-        },
-        {
           key: 'from_city',
           sortable: true,
           type: 'hidden',
@@ -51,6 +37,18 @@ export default {
           sortable: true,
           type: 'hidden',
           label: 'Куда',
+        },
+        {
+          key: 'departure_time',
+          type: 'time',
+          sortable: 'true',
+          label: 'Отправление',
+        },
+        {
+          key: 'arrival_time',
+          type: 'time',
+          sortable: true,
+          label: 'Прибытие',
         },
       ],
     };

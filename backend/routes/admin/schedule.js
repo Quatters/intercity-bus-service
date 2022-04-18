@@ -5,25 +5,29 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await db.query(
-      "SELECT r.route_number AS 'route_number', departure_time, arrival_time, " +
-        "r.from AS 'from', r.to AS 'to', c1.city AS 'from_city', c2.city AS 'to_city' " +
+    const inline = Boolean(req.query?.inline);
+    let sql;
+
+    if (inline) {
+      sql =
+        "SELECT CONCAT(route_number, ' (', DATE_FORMAT(departure_time,'%H:%i'), " +
+        "'-', DATE_FORMAT(arrival_time,'%H:%i'), ')') AS 'schedule', schedule_id " +
+        'FROM route_schedule';
+    } else {
+      sql =
+        "SELECT r.route_number AS 'route_number', DATE_FORMAT(departure_time,'%H:%i') AS 'departure_time', " +
+        "DATE_FORMAT(arrival_time,'%H:%i') AS 'arrival_time', r.from AS 'from', r.to AS 'to', " +
+        "c1.city AS 'from_city', c2.city AS 'to_city' " +
         'FROM route_schedule rs ' +
         'LEFT JOIN route r ON r.route_number = rs.route_number ' +
         'LEFT JOIN city c1 ON r.from = c1.city_id ' +
         'LEFT JOIN city c2 ON r.to = c2.city_id ' +
-        'ORDER BY r.route_number ASC'
-    );
+        'ORDER BY r.route_number ASC';
+    }
 
-    const result = rows.map(row => {
-      row.departure_time = row.departure_time.toLocaleTimeString().slice(0, -3);
-      if (row.arrival_time) {
-        row.arrival_time = row.arrival_time.toLocaleTimeString().slice(0, -3);
-      }
-      return row;
-    });
+    const [rows] = await db.query(sql);
 
-    return res.json(result);
+    return res.json(rows);
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
