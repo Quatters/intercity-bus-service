@@ -5,7 +5,6 @@ let connection = await createConnection({
   user: 'root',
   password: '',
   database: 'intercity_bus_service',
-  // dateStrings: true,
 });
 
 async function select(tables, columns = '*', order = null) {
