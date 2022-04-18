@@ -1,5 +1,11 @@
 import { Router } from 'express';
 import db from '../../data/db.js';
+import {
+  validate,
+  validateForNumber,
+  validateForDate,
+  validateRequired,
+} from '../../data/validators.js';
 
 const router = Router();
 
@@ -68,70 +74,47 @@ router.put('/', async (req, res) => {
 });
 
 function getValidatedData(data) {
-  let schedule_id = data.schedule_id;
-  let bus_number = data.bus_number;
-  let departure_date = data.departure_date;
-  let price = data.price;
+  const [schedule_id, schedule_idErrors] = validate(
+    { schedule_id: data.schedule_id },
+    validateRequired,
+    validateForNumber
+  );
+  const [bus_number, bus_numberErrors] = validate(
+    { bus_number: data.bus_number },
+    validateRequired,
+    validateForNumber
+  );
+  const [departure_date, departure_dateErrors] = validate(
+    { departure_date: data.departure_date },
+    validateRequired,
+    validateForDate
+  );
+  const [price, priceErrors] = validate(
+    { price: data.price },
+    validateRequired,
+    validateForNumber
+  );
 
-  const dateRegex = /^([1-9]\d\d\d)-(0\d|1[0-2])-([0-2]\d|3[0-1])$/;
+  let errors = [];
 
-  let returnedData = { bus_number };
-
-  let errors = {
-    bus_number: [],
-    departure_date: [],
-    schedule_id: [],
-    price: [],
-  };
-  let wereErrors = false;
-
-  if (!schedule_id) {
-    errors.schedule_id.push('This field is required.');
-    wereErrors = true;
-  } else {
-    schedule_id = +schedule_id;
-    returnedData.schedule_id = schedule_id;
-    if (isNaN(schedule_id)) {
-      errors.schedule_id.push('This field must be numeric.');
-      wereErrors = true;
-    }
+  if (schedule_idErrors) {
+    errors.push({ schedule_id: schedule_idErrors });
   }
-  if (!bus_number) {
-    errors.bus_number.push('This field is required.');
-    wereErrors = true;
-  } else {
-    if (bus_number.length !== 6) {
-      errors.route_number.push('This field must be exact 6 characters max.');
-      wereErrors = true;
-    }
+  if (bus_numberErrors) {
+    errors.push({ bus_number: bus_numberErrors });
   }
-  if (!price) {
-    errors.price.push('This field is required.');
-    wereErrors = true;
-  } else {
-    price = +price;
-    returnedData.price = price;
-    if (isNaN(price)) {
-      errors.price.push('This field must be numeric.');
-      wereErrors = true;
-    }
+  if (departure_dateErrors) {
+    errors.push({ departure_date: departure_dateErrors });
   }
-  if (!departure_date) {
-    errors.departure_date.push('This field is required.');
-    wereErrors = true;
-  } else {
-    returnedData.departure_date = departure_date;
-    if (!dateRegex.test(departure_date)) {
-      errors.departure_date.push('This field must be in format yyyy-mm-dd.');
-      wereErrors = true;
-    }
+  if (priceErrors) {
+    errors.push({ price: priceErrors });
   }
 
-  if (wereErrors) {
+  if (errors.length > 0) {
     throw { code: 'ER_INVALID', errors };
   }
 
-  return returnedData;
+  return { schedule_id, bus_number, departure_date, price };
 }
 
 export default router;
