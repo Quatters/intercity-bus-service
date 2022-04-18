@@ -112,7 +112,7 @@ export default {
     this.data = this.form.data;
     this.form.inputs.forEach((inp) => {
       if (inp.type === 'select' && !this.data[inp.id]) {
-        this.data[inp.id] = null;
+        this.$set(this.data, inp.id, null);
       }
     });
   },
