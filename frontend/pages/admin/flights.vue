@@ -47,7 +47,7 @@ export default {
           key: 'price',
           sortable: true,
           type: 'currency',
-          maxLength: 7,
+          maxLength: 8,
           label: 'Цена билета',
         },
       ],

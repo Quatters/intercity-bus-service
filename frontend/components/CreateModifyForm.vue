@@ -124,7 +124,7 @@ export default {
       this.$emit('modify', this.data);
     },
     validateForLength(event, length) {
-      if (event.target.value.length > length) {
+      if (event.target.value.length >= length) {
         event.preventDefault();
       }
     },
