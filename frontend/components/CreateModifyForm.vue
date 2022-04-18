@@ -32,6 +32,18 @@
             }
           "
         ></b-form-input>
+
+        <b-form-input
+          v-else-if="inp.type === 'currency'"
+          v-model="data[inp.key]"
+          type="text"
+          :formatter="currencyFormatter"
+          @keypress="
+            (event) => {
+              if (inp.maxLength) validateForLength(event, inp.maxLength);
+              validateForNumber(event);
+            }
+          "
         ></b-form-input>
 
         <b-form-select
