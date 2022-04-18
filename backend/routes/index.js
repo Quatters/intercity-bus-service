@@ -3,6 +3,7 @@ import routes from './admin/routes.js';
 import busModels from './admin/bus-models.js';
 import buses from './admin/buses.js';
 import schedule from './admin/schedule.js';
+import flights from './admin/flights.js';
 
 export default [
   {
@@ -24,5 +25,9 @@ export default [
   {
     url: 'admin/schedule',
     router: schedule,
+  },
+  {
+    url: 'admin/flights',
+    router: flights,
   },
 ];
