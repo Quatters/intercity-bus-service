@@ -82,7 +82,10 @@ export default {
   },
   methods: {
     handleRowSelect(row) {
-      if (!row) return;
+      if (!row) {
+        this.unselectRow();
+        return;
+      }
 
       this.selectedRow = { ...row };
 
