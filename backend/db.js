@@ -101,7 +101,6 @@ async function update(table, oldData, newData) {
   });
   sql = sql.slice(0, -4);
 
-  console.log(sql);
   await connection.query(sql);
 
   return newData;
