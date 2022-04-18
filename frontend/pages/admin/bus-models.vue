@@ -21,6 +21,7 @@ export default {
           type: 'text',
           sortable: true,
           label: 'Модель',
+          maxLength: 100,
         },
         {
           key: 'seats_amount',

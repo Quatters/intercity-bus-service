@@ -21,6 +21,7 @@ export default {
           sortable: true,
           label: 'Номер маршрута',
           type: 'text',
+          maxLength: 5,
         },
         {
           key: 'from_city',

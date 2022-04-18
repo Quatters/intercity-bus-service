@@ -20,6 +20,7 @@ export default {
           sortable: true,
           label: 'Населенный пункт',
           type: 'text',
+          maxLength: 100,
         },
       ],
       scheme: ['city'],

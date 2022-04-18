@@ -22,6 +22,7 @@ export default {
           sortable: true,
           label: 'Номер',
           type: 'text',
+          maxLength: 6,
         },
         {
           key: 'model',

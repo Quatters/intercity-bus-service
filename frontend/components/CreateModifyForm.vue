@@ -14,12 +14,24 @@
           v-if="inp.type === 'text'"
           v-model="data[inp.key]"
           type="text"
+          @keypress="
+            (event) => {
+              if (inp.maxLength) validateForLength(event, inp.maxLength);
+            }
+          "
         ></b-form-input>
 
         <b-form-input
           v-else-if="inp.type === 'number'"
           v-model="data[inp.key]"
           type="number"
+          @keypress="
+            (event) => {
+              if (inp.maxLength) validateForLength(event, inp.maxLength);
+              validateForNumber(event);
+            }
+          "
+        ></b-form-input>
         ></b-form-input>
 
         <b-form-select
@@ -98,6 +110,37 @@ export default {
     },
     handleModify() {
       this.$emit('modify', this.data);
+    },
+    validateForLength(event, length) {
+      if (event.target.value.length > length) {
+        event.preventDefault();
+      }
+    },
+    validateForNumber(event, additionalChars = []) {
+      const keysAllowed = [
+        '0',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        ...additionalChars,
+      ];
+      const keyPressed = event.key;
+
+      if (!keysAllowed.includes(keyPressed)) {
+        event.preventDefault();
+      }
+    },
+    currencyFormatter(value) {
+      const p = value.replace('.', '');
+      const l = p.substring(-2, p.length - 2);
+      const r = p.substring(p.length - 2, p.length);
+      return l + '.' + r;
     },
   },
   computed: {
