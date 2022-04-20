@@ -6,6 +6,7 @@ import schedule from './admin/schedule.js';
 import flights from './admin/flights.js';
 import tickets from './admin/tickets.js';
 import freeSeats from './root/free-seats.js';
+import reports from './admin/reports.js';
 
 export default [
   {
@@ -39,5 +40,9 @@ export default [
   {
     url: 'free-seats',
     router: freeSeats,
+  },
+  {
+    url: 'admin/reports',
+    router: reports,
   },
 ];
