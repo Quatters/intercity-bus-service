@@ -87,9 +87,10 @@
         :disabled="!allRequiredInputsAreFilled"
         variant="success"
         @click.stop.prevent="handleCreate"
-        >Создать</b-button
+        >{{ createButtonText || 'Создать' }}</b-button
       >
       <b-button
+        v-if="!noModifyButton"
         :disabled="!canModify || !allRequiredInputsAreFilled"
         variant="info"
         @click.stop.prevent="handleModify"
@@ -102,6 +103,8 @@
 <script>
 export default {
   props: {
+    noModifyButton: Boolean,
+    createButtonText: String,
     form: {
       inputs: [],
       data: {},
