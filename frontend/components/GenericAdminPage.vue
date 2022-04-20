@@ -179,6 +179,7 @@ export default {
               text: item[field.optionsScheme.text],
             };
           });
+          this.addCurrentValuesToParameterizedSelectFields();
         }
       });
     },
@@ -187,6 +188,17 @@ export default {
         if (field?.optionsFetchIncludeParam) {
           this.inputData[field.id] = null;
           field.options = [];
+        }
+      });
+    },
+    addCurrentValuesToParameterizedSelectFields() {
+      if (!this.selectedRow) {
+        return;
+      }
+      this.fields.forEach((field) => {
+        if (field?.optionsFetchIncludeParam) {
+          field.options.unshift(this.selectedRow[field.key]);
+          this.inputData[field.id] = this.selectedRow[field.key];
         }
       });
     },
