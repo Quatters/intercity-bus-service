@@ -102,6 +102,7 @@ export default {
       this.inputData = {};
       this.$refs.table.unselect();
       this.selectedRow = null;
+      this.resetParametrizedSelectFields();
     },
     async handleCreate(data) {
       try {
@@ -118,7 +119,6 @@ export default {
       } catch (error) {
         this.handleError(error);
       } finally {
-        this.resetParametrizedSelectFields();
         this.unselectRow();
       }
     },
@@ -146,7 +146,6 @@ export default {
       } catch (error) {
         this.handleError(error);
       } finally {
-        this.resetParametrizedSelectFields();
         this.unselectRow();
       }
     },
