@@ -59,8 +59,7 @@ router.get('/popular-routes', async (req, res) => {
       whereStatement +
       (date_from ? ` departure_date >= '${date_from}' AND` : ' TRUE AND');
     whereStatement =
-      whereStatement +
-      (date_to ? ` departure_date <= '${date_to}' AND` : ' TRUE');
+      whereStatement + (date_to ? ` departure_date <= '${date_to}'` : ' TRUE');
 
     sql = `${sql} ${whereStatement} ${groupOrderStatements}`;
     const [rows] = await db.query(sql);
