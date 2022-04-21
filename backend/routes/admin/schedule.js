@@ -3,6 +3,15 @@ import db from '../../data/db.js';
 
 const router = Router();
 
+const defaultSql =
+  "SELECT r.route_number AS 'route_number', DATE_FORMAT(departure_time,'%H:%i') AS 'departure_time', " +
+  "DATE_FORMAT(arrival_time,'%H:%i') AS 'arrival_time', r.from AS 'from', r.to AS 'to', " +
+  "c1.city AS 'from_city', c2.city AS 'to_city' " +
+  'FROM route_schedule rs ' +
+  'LEFT JOIN route r ON r.route_number = rs.route_number ' +
+  'LEFT JOIN city c1 ON r.from = c1.city_id ' +
+  'LEFT JOIN city c2 ON r.to = c2.city_id';
+
 router.get('/', async (req, res) => {
   try {
     const inline = Boolean(req.query?.inline);
@@ -14,19 +23,23 @@ router.get('/', async (req, res) => {
         "'-', DATE_FORMAT(arrival_time,'%H:%i'), ')') AS 'schedule', schedule_id " +
         'FROM route_schedule';
     } else {
-      sql =
-        "SELECT r.route_number AS 'route_number', DATE_FORMAT(departure_time,'%H:%i') AS 'departure_time', " +
-        "DATE_FORMAT(arrival_time,'%H:%i') AS 'arrival_time', r.from AS 'from', r.to AS 'to', " +
-        "c1.city AS 'from_city', c2.city AS 'to_city' " +
-        'FROM route_schedule rs ' +
-        'LEFT JOIN route r ON r.route_number = rs.route_number ' +
-        'LEFT JOIN city c1 ON r.from = c1.city_id ' +
-        'LEFT JOIN city c2 ON r.to = c2.city_id ' +
-        'ORDER BY r.route_number ASC';
+      sql = `${defaultSql} ORDER BY r.route_number ASC`;
     }
 
     const [rows] = await db.query(sql);
 
+    return res.json(rows);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+});
+
+router.get('/:route_number', async (req, res) => {
+  try {
+    const route_number = req.params.route_number;
+    const sql = `${defaultSql} WHERE r.route_number = '${route_number}'`;
+    const [rows] = await db.query(sql);
     return res.json(rows);
   } catch (error) {
     console.log(error);

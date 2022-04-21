@@ -25,6 +25,9 @@
           <b-dropdown-item to="/admin/reports/statistics"
             >Статистика по рейсам</b-dropdown-item
           >
+          <b-dropdown-item to="/admin/reports/schedule"
+            >Расписание маршрута</b-dropdown-item
+          >
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-collapse>
