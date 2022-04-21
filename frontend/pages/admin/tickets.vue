@@ -44,17 +44,17 @@ export default {
           label: 'Место',
         },
         {
-          key: 'first_name',
-          sortable: true,
-          type: 'text',
-          label: 'Имя',
-          maxLength: 50,
-        },
-        {
           key: 'last_name',
           sortable: true,
           type: 'text',
           label: 'Фамилия',
+          maxLength: 50,
+        },
+        {
+          key: 'first_name',
+          sortable: true,
+          type: 'text',
+          label: 'Имя',
           maxLength: 50,
         },
         {
