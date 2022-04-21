@@ -1,6 +1,6 @@
 <template>
   <b-table
-    hover
+    :hover="!unselectable"
     :items="items"
     :fields="fields ? fields : undefined"
     small
@@ -8,7 +8,7 @@
     head-variant="light"
     sticky-header="100%"
     bordered
-    selectable
+    :selectable="!unselectable"
     ref="table"
     @row-selected="(rows) => $emit('rowSelect', rows[0])"
     select-mode="single"
@@ -19,6 +19,7 @@
 <script>
 export default {
   props: {
+    unselectable: Boolean,
     items: {
       type: Array,
       required: true,
