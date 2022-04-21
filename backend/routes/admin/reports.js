@@ -41,6 +41,40 @@ router.get('/statistics', async (req, res) => {
   }
 });
 
+router.get('/popular-routes', async (req, res) => {
+  try {
+    const { date_from, date_to } = getValidatedData(req.query);
+    let sql =
+      "SELECT r.route_number AS 'route_number', COUNT(t.ticket_id) AS 'ticket_count' " +
+      'FROM route r ' +
+      'RIGHT JOIN route_schedule rs ON r.route_number = rs.route_number ' +
+      'RIGHT JOIN flight f ON rs.schedule_id = f.schedule_id ' +
+      'RIGHT JOIN ticket t ON f.flight_id = t.flight_id';
+
+    const groupOrderStatements =
+      'GROUP BY route_number ORDER BY ticket_count DESC, route_number ASC';
+
+    let whereStatement = 'WHERE';
+    whereStatement =
+      whereStatement +
+      (date_from ? ` departure_date >= '${date_from}' AND` : ' TRUE AND');
+    whereStatement =
+      whereStatement +
+      (date_to ? ` departure_date <= '${date_to}' AND` : ' TRUE');
+
+    sql = `${sql} ${whereStatement} ${groupOrderStatements}`;
+    const [rows] = await db.query(sql);
+
+    return res.json(rows);
+  } catch (error) {
+    console.log(error);
+    if (error.code === 'ER_INVALID') {
+      return res.status(400).json(error);
+    }
+    return res.status(500).json(error);
+  }
+});
+
 function getValidatedData(data) {
   let validatedData = {};
   let errors = [];
