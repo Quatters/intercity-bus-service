@@ -97,7 +97,14 @@ export default {
       this.inputScheme.forEach((item) => {
         inputData[item] = row[item];
       });
+
       this.inputData = inputData;
+
+      this.fields.forEach((item) => {
+        if (item?.type === 'select') {
+          this.handleInputSelect(item, inputData[item.id]);
+        }
+      });
     },
     unselectRow() {
       this.inputData = {};
@@ -162,7 +169,7 @@ export default {
       }
     },
     async handleInputSelect(inp, id) {
-      if (!inp || !id || inp?.optionsFetchIncludeParam) {
+      if (!id || inp?.optionsFetchIncludeParam) {
         return;
       }
       this.fields.forEach(async (field) => {
