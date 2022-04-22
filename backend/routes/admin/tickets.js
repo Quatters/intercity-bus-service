@@ -3,18 +3,37 @@ import db from '../../data/db.js';
 
 const router = Router();
 
+const defaultSql =
+  'SELECT first_name, last_name, patr, seat_number, f.price, ' +
+  "DATE_FORMAT(f.departure_date, '%Y-%m-%d') AS 'departure_date', CONCAT(rs.route_number, ' (', " +
+  "DATE_FORMAT(rs.departure_time,'%H:%i'), " +
+  "'-', DATE_FORMAT(rs.arrival_time,'%H:%i'), ')') AS 'flight', " +
+  "f.flight_id AS 'flight_id' " +
+  'FROM ticket t ' +
+  'LEFT JOIN flight f ON f.flight_id = t.flight_id ' +
+  'LEFT JOIN route_schedule rs ON rs.schedule_id = f.schedule_id';
+
 router.get('/', async (req, res) => {
   try {
     const sql =
-      'SELECT first_name, last_name, patr, seat_number, f.price, ' +
-      "DATE_FORMAT(f.departure_date, '%Y-%m-%d') AS 'departure_date', CONCAT(rs.route_number, ' (', " +
-      "DATE_FORMAT(rs.departure_time,'%H:%i'), " +
-      "'-', DATE_FORMAT(rs.arrival_time,'%H:%i'), ')') AS 'flight', " +
-      "f.flight_id AS 'flight_id' " +
-      'FROM ticket t ' +
-      'LEFT JOIN flight f ON f.flight_id = t.flight_id ' +
-      'LEFT JOIN route_schedule rs ON rs.schedule_id = f.schedule_id ' +
-      'ORDER BY f.departure_date DESC';
+      defaultSql +
+      ' WHERE YEAR(f.departure_date) = YEAR(CURRENT_DATE()) ' +
+      'ORDER BY f.departure_date DESC, rs.route_number ASC';
+
+    const [rows] = await db.query(sql);
+    return res.json(rows);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+});
+
+router.get('/archive', async (req, res) => {
+  try {
+    const sql =
+      defaultSql +
+      ' WHERE YEAR(f.departure_date) != YEAR(CURRENT_DATE()) ' +
+      'ORDER BY f.departure_date DESC, rs.route_number ASC';
 
     const [rows] = await db.query(sql);
     return res.json(rows);
@@ -57,6 +76,21 @@ router.put('/', async (req, res) => {
     } else if (error.code === 'ER_INVALID') {
       return res.status(400).json(error);
     }
+    return res.status(500).json(error);
+  }
+});
+
+router.delete('/archive', async (req, res) => {
+  try {
+    const sql =
+      'DELETE t FROM ticket t ' +
+      'JOIN flight f ON f.flight_id = t.flight_id ' +
+      'WHERE YEAR(f.departure_date) != YEAR(CURRENT_DATE())';
+
+    await db.query(sql);
+    return res.status(201).send();
+  } catch (error) {
+    console.log(error);
     return res.status(500).json(error);
   }
 });

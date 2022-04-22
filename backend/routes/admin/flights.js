@@ -9,9 +9,18 @@ import {
 
 const router = Router();
 
+const defaultSql =
+  'SELECT bus_number, price, ' +
+  "DATE_FORMAT(f.departure_date, '%Y-%m-%d') AS 'departure_date', " +
+  "CONCAT(rs.route_number, ' (', DATE_FORMAT(rs.departure_time,'%H:%i'), " +
+  "'-', DATE_FORMAT(rs.arrival_time,'%H:%i'), ')') AS 'schedule', " +
+  "f.schedule_id AS 'schedule_id' " +
+  'FROM flight f ' +
+  'LEFT JOIN route_schedule rs ON f.schedule_id = rs.schedule_id';
+
 router.get('/', async (req, res) => {
   try {
-    let sql;
+    let sql = `${defaultSql} WHERE YEAR(f.departure_date) = YEAR(CURRENT_DATE()) ORDER BY f.departure_date DESC, rs.route_number ASC`;
     if (req.query?.inline) {
       sql =
         'SELECT ' +
@@ -20,18 +29,21 @@ router.get('/', async (req, res) => {
         "'-', DATE_FORMAT(rs.arrival_time,'%H:%i'), ')') AS 'flight', " +
         "f.flight_id AS 'flight_id' " +
         'FROM flight f ' +
-        'LEFT JOIN route_schedule rs ON rs.schedule_id = f.schedule_id';
-    } else {
-      sql =
-        'SELECT bus_number, price, ' +
-        "DATE_FORMAT(f.departure_date, '%Y-%m-%d') AS 'departure_date', " +
-        "CONCAT(rs.route_number, ' (', DATE_FORMAT(rs.departure_time,'%H:%i'), " +
-        "'-', DATE_FORMAT(rs.arrival_time,'%H:%i'), ')') AS 'schedule', " +
-        "f.schedule_id AS 'schedule_id' " +
-        'FROM flight f ' +
-        'LEFT JOIN route_schedule rs ON f.schedule_id = rs.schedule_id ';
+        'LEFT JOIN route_schedule rs ON rs.schedule_id = f.schedule_id ' +
+        'WHERE YEAR(f.departure_date) = YEAR(CURRENT_DATE()) ';
     }
 
+    const [rows] = await db.query(sql);
+    return res.json(rows);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+});
+
+router.get('/archive', async (req, res) => {
+  try {
+    const sql = `${defaultSql} WHERE YEAR(f.departure_date) != YEAR(CURRENT_DATE()) ORDER BY f.departure_date DESC, rs.route_number ASC`;
     const [rows] = await db.query(sql);
     return res.json(rows);
   } catch (error) {
@@ -69,6 +81,19 @@ router.put('/', async (req, res) => {
     } else if (error.code === 'ER_INVALID') {
       return res.status(400).json(error);
     }
+    return res.status(500).json(error);
+  }
+});
+
+router.delete('/archive', async (req, res) => {
+  try {
+    const sql =
+      'DELETE FROM flight ' +
+      'WHERE YEAR(departure_date) != YEAR(CURRENT_DATE())';
+
+    await db.query(sql);
+    return res.status(201).send();
+  } catch (error) {
     return res.status(500).json(error);
   }
 });
