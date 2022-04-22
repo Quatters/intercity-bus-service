@@ -12,6 +12,7 @@
     ref="table"
     @row-selected="(rows) => $emit('rowSelect', rows[0])"
     select-mode="single"
+    empty-text="Нет записей"
   >
   </b-table>
 </template>

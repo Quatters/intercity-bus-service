@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <b-row class="m-4">
-      <b-col cols="8">
+      <b-col cols="8" class="table-wrapper">
         <my-table :fields="report.fields" :items="report.items" unselectable />
       </b-col>
       <b-col>
@@ -52,7 +52,6 @@ export default {
   },
   async mounted() {
     const items = await this.$axios.$get('/api/admin/reports/popular-routes');
-    console.log(items);
     this.report.items = items;
   },
   methods: {
