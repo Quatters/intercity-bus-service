@@ -5,7 +5,13 @@
     :requestScheme="requestScheme"
     endpoint="/api/admin/flights"
     tableName="Рейсы"
-  />
+    ><small class="text-muted"
+      >Показаны рейсы за текущий год. Для просмотра остальных рейсов перейдите в
+      <NuxtLink to="/admin/archive/flights" style="font: inherit"
+        >архив</NuxtLink
+      >.</small
+    ></generic-admin-page
+  >
 </template>
 
 <script>

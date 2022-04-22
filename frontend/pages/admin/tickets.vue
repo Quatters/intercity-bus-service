@@ -5,7 +5,14 @@
     :requestScheme="scheme"
     endpoint="/api/admin/tickets"
     tableName="Билеты"
-  />
+    ><small class="text-muted"
+      >Показаны билеты за текущий год. Для просмотра остальных билетов перейдите
+      в
+      <NuxtLink to="/admin/archive/tickets" style="font: inherit"
+        >архив</NuxtLink
+      >.</small
+    ></generic-admin-page
+  >
 </template>
 
 <script>
