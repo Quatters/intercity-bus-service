@@ -17,7 +17,8 @@
           @modify="handleModify"
           @select="handleInputSelect"
           :name="tableName"
-        />
+          ><slot></slot
+        ></create-modify-form>
         <small
           :class="
             operationStatus.status === 'error' ? 'text-danger' : 'text-muted'

@@ -82,8 +82,10 @@
         </b-form-datepicker>
       </div>
     </div>
-    <div class="mt-4">
+    <slot></slot>
+    <div v-if="!noCreateButton || !noModifyButton" class="mt-4">
       <b-button
+        v-if="!noCreateButton"
         :disabled="!allRequiredInputsAreFilled"
         variant="success"
         @click.stop.prevent="handleCreate"
@@ -104,6 +106,7 @@
 export default {
   props: {
     noModifyButton: Boolean,
+    noCreateButton: Boolean,
     createButtonText: String,
     form: {
       inputs: [],
