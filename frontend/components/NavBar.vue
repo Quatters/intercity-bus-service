@@ -20,19 +20,29 @@
         <b-nav-text>|</b-nav-text>
         <b-nav-item to="/admin/tickets">Билеты</b-nav-item>
       </b-navbar-nav>
-      <b-navbar-nav class="ml-auto">
-        <b-nav-item-dropdown text="Отчетность" right>
-          <b-dropdown-item to="/admin/reports/statistics"
-            >Статистика по рейсам</b-dropdown-item
-          >
-          <b-dropdown-item to="/admin/reports/schedule"
-            >Расписание маршрута</b-dropdown-item
-          >
-          <b-dropdown-item to="/admin/reports/popular-routes"
-            >Популярные маршруты</b-dropdown-item
-          >
-        </b-nav-item-dropdown>
-      </b-navbar-nav>
+      <div class="ml-auto d-flex">
+        <b-navbar-nav>
+          <b-nav-item-dropdown text="Архив" right>
+            <b-dropdown-item to="/admin/archive/flights">Рейсы</b-dropdown-item>
+            <b-dropdown-item to="/admin/archive/tickets"
+              >Билеты</b-dropdown-item
+            >
+          </b-nav-item-dropdown>
+        </b-navbar-nav>
+        <b-navbar-nav>
+          <b-nav-item-dropdown text="Отчетность" right>
+            <b-dropdown-item to="/admin/reports/statistics"
+              >Статистика по рейсам</b-dropdown-item
+            >
+            <b-dropdown-item to="/admin/reports/schedule"
+              >Расписание маршрута</b-dropdown-item
+            >
+            <b-dropdown-item to="/admin/reports/popular-routes"
+              >Популярные маршруты</b-dropdown-item
+            >
+          </b-nav-item-dropdown>
+        </b-navbar-nav>
+      </div>
     </b-collapse>
   </b-navbar>
 </template>
