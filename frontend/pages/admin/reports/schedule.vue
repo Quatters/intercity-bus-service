@@ -11,7 +11,7 @@
               {{ report.from_city }} - {{ report.to_city }}
             </b-card-sub-title>
 
-            <b-card-text class="mt-3 mb-1">Расписание:</b-card-text>
+            <b-card-text class="mt-3 mb-2">Расписание:</b-card-text>
 
             <b-table-simple class="mb-0">
               <b-tr v-for="(schedule, index) in report.schedule" :key="index">
@@ -27,10 +27,25 @@
         <create-modify-form
           :form="form"
           name="Расписание маршрута"
-          @create="handleFetch"
           noModifyButton
-          createButtonText="Получить"
-        />
+          noCreateButton
+        >
+          <div class="d-flex">
+            <b-button
+              @click="handleFetch"
+              :disabled="!form.data.route_number"
+              variant="success"
+              >Получить</b-button
+            >
+            <b-button
+              @click="handlePrint"
+              :disabled="Object.keys(report).length === 0"
+              variant="info"
+              class="ml-auto"
+              ><b-icon-printer-fill></b-icon-printer-fill
+            ></b-button>
+          </div>
+        </create-modify-form>
       </b-col>
     </b-row>
   </b-container>
@@ -38,6 +53,8 @@
 
 <script>
 import CreateModifyForm from '../../../components/CreateModifyForm.vue';
+import { createReport } from '../../../static/pdf-creator';
+
 export default {
   components: { CreateModifyForm },
   data() {
@@ -85,6 +102,17 @@ export default {
       });
 
       this.report = report;
+    },
+    handlePrint() {
+      const report = {
+        title: 'Расписание маршрута',
+        subtitle: `${this.report.route_number} - ${this.report.from_city}-${this.report.to_city}`,
+        data: this.report.schedule.map(
+          (item) => `${item.departure_time}-${item.arrival_time}`
+        ),
+        filename: `Расписание маршрута ${this.report.route_number}`,
+      };
+      createReport(report);
     },
   },
 };

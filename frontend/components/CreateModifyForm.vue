@@ -82,7 +82,9 @@
         </b-form-datepicker>
       </div>
     </div>
-    <slot></slot>
+    <div class="mt-4">
+      <slot></slot>
+    </div>
     <div v-if="!noCreateButton || !noModifyButton" class="mt-4">
       <b-button
         v-if="!noCreateButton"

@@ -2,7 +2,7 @@
   <b-container fluid>
     <b-row class="m-4">
       <b-col cols="8">
-        <b-table-simple bordered caption-bottom fixed>
+        <b-table-simple bordered caption-bottom fixed id="printable-table">
           <caption class="font-italic pt-1">
             {{
               description
@@ -24,17 +24,41 @@
         <create-modify-form
           :form="dateForm"
           name="Статистика"
-          @create="handleFetchByDate"
           noModifyButton
-          createButtonText="Получить"
-        />
+          noCreateButton
+        >
+          <div class="d-flex">
+            <b-button @click="handleFetchByDate" variant="success"
+              >Получить</b-button
+            >
+            <b-button
+              @click="handlePrint"
+              :disabled="Object.keys(report).length === 0"
+              variant="info"
+              class="ml-auto"
+              ><b-icon-printer-fill></b-icon-printer-fill
+            ></b-button>
+          </div>
+        </create-modify-form>
         <create-modify-form
           :form="flightForm"
-          @create="handleFetchByFlight"
+          noCreateButton
           noModifyButton
-          createButtonText="Получить"
           class="mt-4"
-        />
+        >
+          <div class="d-flex">
+            <b-button @click="handleFetchByFlight" variant="success"
+              >Получить</b-button
+            >
+            <b-button
+              @click="handlePrint"
+              :disabled="Object.keys(report).length === 0"
+              variant="info"
+              class="ml-auto"
+              ><b-icon-printer-fill></b-icon-printer-fill
+            ></b-button>
+          </div>
+        </create-modify-form>
       </b-col>
     </b-row>
   </b-container>
@@ -42,6 +66,7 @@
 
 <script>
 import CreateModifyForm from '../../../components/CreateModifyForm.vue';
+import { createReport } from '../../../static/pdf-creator';
 
 export default {
   components: { CreateModifyForm },
@@ -54,11 +79,13 @@ export default {
             key: 'date_from',
             type: 'date',
             label: 'С',
+            optional: true,
           },
           {
             key: 'date_to',
             type: 'date',
             label: 'По',
+            optional: true,
           },
         ],
         data: {},
@@ -72,6 +99,7 @@ export default {
             options: [],
             optionsScheme: { value: 'flight_id', text: 'flight' },
             label: 'Рейс',
+            optional: true,
           },
         ],
         data: {},
@@ -100,22 +128,21 @@ export default {
         `/api/admin/reports/statistics?${query}`
       );
 
-      this.description = `Статистика за период с ${this.formatDate(
-        date_from
-      )} по ${this.formatDate(date_to)}`;
+      this.setDescription(date_from, date_to);
     },
     async handleFetchByFlight() {
       let { flight_id } = this.flightForm.data;
-
       flight_id = flight_id || '';
-
       let query = `flight_id=${flight_id}`;
 
       this.report = await this.$axios.$get(
         `/api/admin/reports/statistics?${query}`
       );
-
-      this.description = `Статистика по рейсу ${this.getFlight(flight_id)}`;
+      if (flight_id)
+        this.description = `Статистика по рейсу ${this.getFlight(flight_id)}`;
+      else {
+        this.setDescription();
+      }
     },
     formatDate(dateStr) {
       return dateStr.split('-').reverse().join('.');
@@ -124,6 +151,26 @@ export default {
       return this.flightForm.inputs[0].options.find(
         (option) => option.value === flight_id
       ).text;
+    },
+    handlePrint() {
+      createReport({ subtitle: this.description }, '#printable-table');
+    },
+    setDescription(date_from, date_to) {
+      if (!date_from && !date_to) {
+        this.description = 'Статистика за все время';
+      } else if (!date_from) {
+        this.description = `Статистика за период до ${this.formatDate(
+          date_to
+        )}`;
+      } else if (!date_to) {
+        this.description = `Статистика за период с ${this.formatDate(
+          date_from
+        )}`;
+      } else {
+        this.description = `Статистика за период с ${this.formatDate(
+          date_from
+        )} по ${this.formatDate(date_to)}`;
+      }
     },
   },
 };

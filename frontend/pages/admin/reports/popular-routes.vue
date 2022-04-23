@@ -8,7 +8,7 @@
           unselectable
           class="mb-1"
         />
-        <p class="font-italic text-muted">{{ reportText }}</p>
+        <p class="font-italic text-muted">{{ description }}</p>
       </b-col>
       <b-col>
         <create-modify-form
@@ -16,8 +16,20 @@
           name="Популярные маршруты"
           @create="handleFetch"
           noModifyButton
+          noCreateButton
           createButtonText="Получить"
-        />
+        >
+          <div class="d-flex">
+            <b-button @click="handleFetch" variant="success">Получить</b-button>
+            <b-button
+              @click="handlePrint"
+              :disabled="Object.keys(report).length === 0"
+              variant="info"
+              class="ml-auto"
+              ><b-icon-printer-fill></b-icon-printer-fill
+            ></b-button>
+          </div>
+        </create-modify-form>
       </b-col>
     </b-row>
   </b-container>
@@ -26,22 +38,26 @@
 <script>
 import CreateModifyForm from '../../../components/CreateModifyForm.vue';
 import MyTable from '../../../components/MyTable.vue';
+import { createReport } from '../../../static/pdf-creator';
+
 export default {
   components: { CreateModifyForm, MyTable },
   data() {
     return {
-      reportText: 'Популярные маршруты за все время',
+      description: 'Популярные маршруты за все время',
       form: {
         inputs: [
           {
             key: 'date_from',
             type: 'date',
             label: 'С',
+            optional: true,
           },
           {
             key: 'date_to',
             type: 'date',
             label: 'По',
+            optional: true,
           },
         ],
         data: {},
@@ -72,12 +88,30 @@ export default {
         `/api/admin/reports/popular-routes?${query}`
       );
 
-      this.reportText = `Популярные маршруты в период с ${this.formatDate(
-        date_from
-      )} по ${this.formatDate(date_to)}`;
+      this.setDescription(date_from, date_to);
+    },
+    setDescription(date_from, date_to) {
+      if (!date_from && !date_to) {
+        this.description = 'Популярные маршруты за все время';
+      } else if (!date_from) {
+        this.description = `Популярные маршруты в период до ${this.formatDate(
+          date_to
+        )}`;
+      } else if (!date_to) {
+        this.description = `Популярные маршруты в период с ${this.formatDate(
+          date_from
+        )}`;
+      } else {
+        this.description = `Популярные маршруты в период с ${this.formatDate(
+          date_from
+        )} по ${this.formatDate(date_to)}`;
+      }
     },
     formatDate(dateStr) {
       return dateStr.split('-').reverse().join('.');
+    },
+    handlePrint() {
+      createReport({ subtitle: this.description }, '#printable-table');
     },
   },
 };
