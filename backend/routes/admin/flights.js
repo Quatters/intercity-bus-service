@@ -106,8 +106,7 @@ function getValidatedData(data) {
   );
   const [bus_number, bus_numberErrors] = validate(
     { bus_number: data.bus_number },
-    validateRequired,
-    validateForNumber
+    validateRequired
   );
   const [departure_date, departure_dateErrors] = validate(
     { departure_date: data.departure_date },
