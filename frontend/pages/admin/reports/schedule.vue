@@ -30,7 +30,7 @@
           noModifyButton
           noCreateButton
         >
-          <div class="d-flex">
+          <div class="d-flex mt-4">
             <b-button
               @click="handleFetch"
               :disabled="!form.data.route_number"

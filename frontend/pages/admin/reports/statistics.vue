@@ -46,7 +46,7 @@
           noModifyButton
           class="mt-4"
         >
-          <div class="d-flex">
+          <div class="d-flex mt-4">
             <b-button @click="handleFetchByFlight" variant="success"
               >Получить</b-button
             >

@@ -19,7 +19,7 @@
           noCreateButton
           createButtonText="Получить"
         >
-          <div class="d-flex">
+          <div class="d-flex mt-4">
             <b-button @click="handleFetch" variant="success">Получить</b-button>
             <b-button
               @click="handlePrint"
