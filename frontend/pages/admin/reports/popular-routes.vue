@@ -2,7 +2,13 @@
   <b-container fluid>
     <b-row class="m-4">
       <b-col cols="8" class="table-wrapper">
-        <my-table :fields="report.fields" :items="report.items" unselectable />
+        <my-table
+          :fields="report.fields"
+          :items="report.items"
+          unselectable
+          class="mb-1"
+        />
+        <p class="font-italic text-muted">{{ reportText }}</p>
       </b-col>
       <b-col>
         <create-modify-form
@@ -24,19 +30,18 @@ export default {
   components: { CreateModifyForm, MyTable },
   data() {
     return {
+      reportText: 'Популярные маршруты за все время',
       form: {
         inputs: [
           {
             key: 'date_from',
             type: 'date',
             label: 'С',
-            optional: true,
           },
           {
             key: 'date_to',
             type: 'date',
             label: 'По',
-            optional: true,
           },
         ],
         data: {},
@@ -66,6 +71,13 @@ export default {
       this.report.items = await this.$axios.$get(
         `/api/admin/reports/popular-routes?${query}`
       );
+
+      this.reportText = `Популярные маршруты в период с ${this.formatDate(
+        date_from
+      )} по ${this.formatDate(date_to)}`;
+    },
+    formatDate(dateStr) {
+      return dateStr.split('-').reverse().join('.');
     },
   },
 };

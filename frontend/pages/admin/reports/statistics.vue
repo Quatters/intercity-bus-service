@@ -4,17 +4,8 @@
       <b-col cols="8">
         <b-table-simple bordered caption-bottom fixed>
           <caption class="font-italic pt-1">
-            Отчет
             {{
-              form.data.flight_id
-                ? `по рейсу ${getFlight(form.data.flight_id)}`
-                : ' '
-            }}
-            {{
-              form.data.date_from ? `с ${formatDate(form.data.date_from)}` : ' '
-            }}
-            {{
-              form.data.date_to ? `по ${formatDate(form.data.date_to)}` : ''
+              description
             }}
           </caption>
           <b-tbody>
@@ -31,11 +22,18 @@
       </b-col>
       <b-col>
         <create-modify-form
-          :form="form"
+          :form="dateForm"
           name="Статистика"
-          @create="handleFetch"
+          @create="handleFetchByDate"
           noModifyButton
           createButtonText="Получить"
+        />
+        <create-modify-form
+          :form="flightForm"
+          @create="handleFetchByFlight"
+          noModifyButton
+          createButtonText="Получить"
+          class="mt-4"
         />
       </b-col>
     </b-row>
@@ -49,7 +47,23 @@ export default {
   components: { CreateModifyForm },
   data() {
     return {
-      form: {
+      description: 'Статистика за все время',
+      dateForm: {
+        inputs: [
+          {
+            key: 'date_from',
+            type: 'date',
+            label: 'С',
+          },
+          {
+            key: 'date_to',
+            type: 'date',
+            label: 'По',
+          },
+        ],
+        data: {},
+      },
+      flightForm: {
         inputs: [
           {
             key: 'flight',
@@ -58,19 +72,6 @@ export default {
             options: [],
             optionsScheme: { value: 'flight_id', text: 'flight' },
             label: 'Рейс',
-            optional: true,
-          },
-          {
-            key: 'date_from',
-            type: 'date',
-            label: 'С',
-            optional: true,
-          },
-          {
-            key: 'date_to',
-            type: 'date',
-            label: 'По',
-            optional: true,
           },
         ],
         data: {},
@@ -80,7 +81,7 @@ export default {
   },
   async mounted() {
     const options = await this.$axios.$get('/api/admin/flights?inline=true');
-    this.form.inputs[0].options = options.map((option) => {
+    this.flightForm.inputs[0].options = options.map((option) => {
       return {
         value: option.flight_id,
         text: option.flight,
@@ -89,24 +90,38 @@ export default {
     this.report = await this.$axios.$get('/api/admin/reports/statistics');
   },
   methods: {
-    async handleFetch() {
-      let { flight_id, date_from, date_to } = this.form.data;
-
-      flight_id = flight_id || '';
+    async handleFetchByDate() {
+      let { date_from, date_to } = this.dateForm.data;
       date_from = date_from || '';
       date_to = date_to || '';
-
-      let query = `flight_id=${flight_id}&date_from=${date_from}&date_to=${date_to}`;
+      let query = `date_from=${date_from}&date_to=${date_to}`;
 
       this.report = await this.$axios.$get(
         `/api/admin/reports/statistics?${query}`
       );
+
+      this.description = `Статистика за период с ${this.formatDate(
+        date_from
+      )} по ${this.formatDate(date_to)}`;
+    },
+    async handleFetchByFlight() {
+      let { flight_id } = this.flightForm.data;
+
+      flight_id = flight_id || '';
+
+      let query = `flight_id=${flight_id}`;
+
+      this.report = await this.$axios.$get(
+        `/api/admin/reports/statistics?${query}`
+      );
+
+      this.description = `Статистика по рейсу ${this.getFlight(flight_id)}`;
     },
     formatDate(dateStr) {
       return dateStr.split('-').reverse().join('.');
     },
     getFlight(flight_id) {
-      return this.form.inputs[0].options.find(
+      return this.flightForm.inputs[0].options.find(
         (option) => option.value === flight_id
       ).text;
     },
