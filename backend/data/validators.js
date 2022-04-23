@@ -3,9 +3,6 @@ export function validate(field, ...validators) {
     throw 'No validators provided.';
   }
 
-  if (!field) {
-  }
-
   const key = Object.keys(field)[0];
   let value = field[key];
 
@@ -19,7 +16,7 @@ export function validate(field, ...validators) {
     }
   });
 
-  const validatedField = [{ [key]: value }];
+  const validatedField = [value];
   if (errors.length > 0) {
     validatedField.push(errors);
   }
