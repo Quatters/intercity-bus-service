@@ -38,7 +38,7 @@ router.get('/', async (req, res) => {
 router.get('/:route_number', async (req, res) => {
   try {
     const route_number = req.params.route_number;
-    const sql = `${defaultSql} WHERE r.route_number = '${route_number}'`;
+    const sql = `${defaultSql} WHERE r.route_number = '${route_number}' ORDER BY departure_time ASC`;
     const [rows] = await db.query(sql);
     return res.json(rows);
   } catch (error) {
